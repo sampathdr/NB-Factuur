@@ -146,3 +146,5 @@ If you use **manual** invoice numbering, Dutch law still requires numbers to
 be gapless and sequential — the app only guarantees uniqueness for manual
 numbers, so stick to auto-generated numbering unless you have a specific
 reason not to.
+
+<!-- deploy verification 2026-09-21T21:12:35Z -->
