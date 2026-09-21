@@ -94,6 +94,24 @@ Visit `http://localhost:8787`.
 npm run deploy
 ```
 
+## Continuous deployment (optional)
+
+The repo includes two GitHub Actions workflows:
+
+- **`.github/workflows/ci.yml`** — runs on every push/PR: typechecks and does
+  a `wrangler deploy --dry-run` to catch config/bundling errors before merge.
+  Works out of the box, no setup needed.
+- **`.github/workflows/deploy.yml`** — deploys to Cloudflare on every push to
+  `main`. It's off by default so CI doesn't fail on forks/before setup. To
+  turn it on:
+  1. Create a Cloudflare API token with the "Edit Cloudflare Workers" template
+     at https://dash.cloudflare.com/profile/api-tokens
+  2. In the repo: **Settings → Secrets and variables → Actions**, add secrets
+     `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (find the account ID
+     on the right sidebar of any page in the Cloudflare dashboard)
+  3. In the same **Variables** tab, add a repo variable `DEPLOY_ENABLED` set
+     to `true`
+
 ## Project layout
 
 ```
