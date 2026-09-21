@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>New invoice — NB-Factuur</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">NB-Factuur</div>
+    <a class="btn secondary" href="dashboard.html">Back to dashboard</a>
+  </header>
+
+  <div class="container" style="max-width: 720px;">
+    <div class="card">
+      <h3>New invoice</h3>
+
+      <div class="row">
+        <div>
+          <label>Client *</label>
+          <select id="client_id"></select>
+        </div>
+        <div>
+          <label>Currency</label>
+          <select id="currency">
+            <option>EUR</option><option>USD</option><option>GBP</option><option>CHF</option>
+            <option>SEK</option><option>NOK</option><option>DKK</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div><label>Invoice date</label><input type="date" id="invoice_date" /></div>
+        <div><label>Delivery date *</label><input type="date" id="delivery_date" /></div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>VAT scheme</label>
+          <select id="vat_scheme">
+            <option value="standard">Standard VAT</option>
+            <option value="kor">KOR (VAT-exempt)</option>
+            <option value="reverse_charge">Reverse-charge (BTW verlegd)</option>
+          </select>
+        </div>
+        <div>
+          <label>Invoice number</label>
+          <select id="numbering_mode">
+            <option value="auto">Auto-generate</option>
+            <option value="manual">Enter manually</option>
+          </select>
+        </div>
+      </div>
+      <div id="manualNumberWrap" style="display:none;">
+        <label>Invoice number</label>
+        <input id="manual_invoice_number" placeholder="e.g. 2026-0042" />
+      </div>
+
+      <h4 style="margin-top:24px;">Line items</h4>
+      <div id="itemsWrap"></div>
+      <button class="btn secondary" id="addItemBtn" type="button">+ Add line</button>
+
+      <div class="totals">
+        <div>Subtotal: <span id="totalSubtotal">0.00</span></div>
+        <div>VAT: <span id="totalVat">0.00</span></div>
+        <div class="grand">Total: <span id="totalGrand">0.00</span></div>
+      </div>
+
+      <label>Notes</label>
+      <textarea id="notes" rows="2"></textarea>
+
+      <div style="margin-top:20px;">
+        <button class="btn" id="createBtn">Create invoice</button>
+      </div>
+      <div class="error" id="formError"></div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/invoice-editor.js"></script>
+</body>
+</html>

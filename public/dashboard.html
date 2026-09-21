@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — NB-Factuur</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">NB-Factuur</div>
+    <div>
+      <span id="userEmail" class="muted" style="margin-right: 16px;"></span>
+      <button class="btn secondary" id="logoutBtn">Sign out</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items:center;">
+        <div style="flex:1;">
+          <label for="companySelect">Active company</label>
+          <select id="companySelect"></select>
+        </div>
+        <div style="margin-left: 16px; margin-top: 18px;">
+          <a class="btn secondary" id="settingsLink" href="#">Company settings</a>
+          <button class="btn secondary" id="newCompanyBtn">+ New company</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="newCompanyForm" class="card" style="display:none;"></div>
+
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items:center;">
+        <h3 style="margin:0;">Clients</h3>
+        <button class="btn secondary" id="newClientBtn">+ Add client</button>
+      </div>
+      <div id="newClientForm" style="display:none; margin-top: 12px;"></div>
+      <table style="margin-top: 12px;">
+        <thead><tr><th>Name</th><th>City</th><th>VAT number</th><th></th></tr></thead>
+        <tbody id="clientsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items:center;">
+        <h3 style="margin:0;">Invoices</h3>
+        <a class="btn" id="newInvoiceLink" href="invoice-editor.html">+ New invoice</a>
+      </div>
+      <table style="margin-top: 12px;">
+        <thead><tr><th>Number</th><th>Date</th><th>Client</th><th>Total</th><th></th></tr></thead>
+        <tbody id="invoicesBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

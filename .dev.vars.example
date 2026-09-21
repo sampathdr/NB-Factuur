@@ -1,0 +1,6 @@
+# Copy this file to .dev.vars for local development (wrangler dev reads it automatically).
+# Never commit the real .dev.vars file — it's already in .gitignore.
+
+GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-google-oauth-client-secret
+SESSION_SECRET=any-long-random-string

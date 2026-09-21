@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Company settings — NB-Factuur</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">NB-Factuur</div>
+    <a class="btn secondary" href="dashboard.html">Back to dashboard</a>
+  </header>
+
+  <div class="container" style="max-width: 640px;">
+    <div class="card">
+      <h3>Logo</h3>
+      <img id="logoPreview" style="max-height:60px; display:none; margin-bottom:12px;" />
+      <input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp" />
+      <p class="muted">PNG, JPEG or WebP, up to 2MB.</p>
+      <div class="error" id="logoError"></div>
+    </div>
+
+    <div class="card">
+      <h3>Company details</h3>
+      <div class="row">
+        <div><label>Legal name *</label><input id="legal_name" /></div>
+        <div><label>Trade name</label><input id="trade_name" /></div>
+      </div>
+      <label>Address *</label><input id="address_line1" />
+      <div class="row">
+        <div><label>Postal code *</label><input id="postal_code" /></div>
+        <div><label>City *</label><input id="city" /></div>
+        <div><label>Country</label><input id="country" /></div>
+      </div>
+      <div class="row">
+        <div><label>KvK number *</label><input id="kvk_number" /></div>
+        <div><label>VAT (BTW) number</label><input id="vat_number" /></div>
+      </div>
+      <div class="row">
+        <div>
+          <label>VAT scheme</label>
+          <select id="vat_scheme">
+            <option value="standard">Standard VAT</option>
+            <option value="kor">KOR (VAT-exempt small business)</option>
+            <option value="reverse_charge">Reverse-charge by default</option>
+          </select>
+        </div>
+        <div><label>Default currency</label>
+          <select id="default_currency">
+            <option>EUR</option><option>USD</option><option>GBP</option><option>CHF</option>
+            <option>SEK</option><option>NOK</option><option>DKK</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div><label>Invoice number prefix</label><input id="invoice_prefix" /></div>
+        <div><label>IBAN</label><input id="iban" /></div>
+      </div>
+      <div class="row">
+        <div><label>Email</label><input id="email" /></div>
+        <div><label>Phone</label><input id="phone" /></div>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="btn" id="saveBtn">Save changes</button>
+      </div>
+      <div class="error" id="saveError"></div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/company-settings.js"></script>
+</body>
+</html>

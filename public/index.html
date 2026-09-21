@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NB-Factuur — Dutch invoicing</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="container" style="max-width: 480px; margin-top: 80px; text-align: center;">
+    <h1 style="color: var(--blue-dark);">NB-Factuur</h1>
+    <p class="muted">KvK/Belastingdienst-compliant invoicing, built for Cloudflare Workers.</p>
+    <div class="card" style="margin-top: 32px;">
+      <p>Sign in to create and manage your invoices.</p>
+      <a class="btn" href="/auth/google" style="width: 100%; margin-top: 8px;">Sign in with Google</a>
+    </div>
+  </div>
+  <script>
+    // If already signed in, skip straight to the dashboard.
+    fetch("/auth/me", { credentials: "same-origin" })
+      .then((r) => (r.ok ? (window.location.href = "/dashboard.html") : null))
+      .catch(() => {});
+  </script>
+</body>
+</html>
