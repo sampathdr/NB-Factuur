@@ -13,7 +13,7 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "nb-factuur-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+database_id = "db11724e-081f-41af-8dbf-4c76793f8de4"
 
 # Company logos are stored as BLOBs directly in D1 (see schema.sql), not R2 —
 # R2 requires a payment method on file even to use its free tier, D1 doesn't.
