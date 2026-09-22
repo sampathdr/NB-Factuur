@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS companies (
   bic TEXT,
   email TEXT,
   phone TEXT,
-  logo_key TEXT,                 -- R2 object key
+  logo_data BLOB,               -- logo image bytes, stored directly in D1 (no R2 = no card required)
+  logo_content_type TEXT,       -- e.g. image/png
   default_currency TEXT NOT NULL DEFAULT 'EUR',
   invoice_prefix TEXT NOT NULL DEFAULT 'INV',
   next_invoice_seq INTEGER NOT NULL DEFAULT 1,

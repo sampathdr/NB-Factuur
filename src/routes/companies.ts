@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { Env, VatScheme } from "../types";
 import { AuthedVars, requireAuth, requireCompanyOwnership } from "../lib/middleware";
-import { newId } from "../lib/util";
+import { newId, COMPANY_COLUMNS } from "../lib/util";
 import { setActiveCompany } from "../lib/auth";
 
 const companies = new Hono<{ Bindings: Env; Variables: AuthedVars }>();
@@ -12,7 +12,7 @@ const VALID_VAT_SCHEMES: VatScheme[] = ["standard", "kor", "reverse_charge"];
 companies.get("/", async (c) => {
   const session = c.get("session");
   const { results } = await c.env.DB
-    .prepare("SELECT * FROM companies WHERE owner_user_id = ? ORDER BY created_at")
+    .prepare(`SELECT ${COMPANY_COLUMNS} FROM companies WHERE owner_user_id = ? ORDER BY created_at`)
     .bind(session.userId)
     .all();
   return c.json({ companies: results, active_company_id: session.activeCompanyId });
@@ -72,7 +72,7 @@ companies.post("/", async (c) => {
 
   await setActiveCompany(c.env, session.sessionId, id);
 
-  const company = await c.env.DB.prepare("SELECT * FROM companies WHERE id = ?").bind(id).first();
+  const company = await c.env.DB.prepare(`SELECT ${COMPANY_COLUMNS} FROM companies WHERE id = ?`).bind(id).first();
   return c.json({ company }, 201);
 });
 
@@ -125,7 +125,7 @@ companies.put("/:id", async (c) => {
     )
     .run();
 
-  const company = await c.env.DB.prepare("SELECT * FROM companies WHERE id = ?").bind(id).first();
+  const company = await c.env.DB.prepare(`SELECT ${COMPANY_COLUMNS} FROM companies WHERE id = ?`).bind(id).first();
   return c.json({ company });
 });
 
@@ -151,10 +151,10 @@ companies.put("/:id/logo", async (c) => {
     return c.json({ error: "Logo must be under 2MB" }, 400);
   }
 
-  const ext = contentType.split("/")[1]?.replace("+xml", "") ?? "png";
-  const key = `logos/${id}/logo.${ext}`;
-  await c.env.LOGOS.put(key, bytes, { httpMetadata: { contentType } });
-  await c.env.DB.prepare("UPDATE companies SET logo_key = ? WHERE id = ?").bind(key, id).run();
+  await c.env.DB
+    .prepare("UPDATE companies SET logo_data = ?, logo_content_type = ? WHERE id = ?")
+    .bind(bytes, contentType, id)
+    .run();
 
   return c.json({ ok: true, logo_url: `/api/companies/${id}/logo` });
 });
@@ -162,17 +162,14 @@ companies.put("/:id/logo", async (c) => {
 companies.get("/:id/logo", async (c) => {
   const id = c.req.param("id");
   const company = await c.env.DB
-    .prepare("SELECT logo_key FROM companies WHERE id = ?")
+    .prepare("SELECT logo_data, logo_content_type FROM companies WHERE id = ?")
     .bind(id)
-    .first<{ logo_key: string | null }>();
-  if (!company?.logo_key) return c.notFound();
+    .first<{ logo_data: ArrayBuffer | null; logo_content_type: string | null }>();
+  if (!company?.logo_data) return c.notFound();
 
-  const obj = await c.env.LOGOS.get(company.logo_key);
-  if (!obj) return c.notFound();
-
-  return new Response(obj.body, {
+  return new Response(company.logo_data, {
     headers: {
-      "Content-Type": obj.httpMetadata?.contentType ?? "application/octet-stream",
+      "Content-Type": company.logo_content_type ?? "application/octet-stream",
       "Cache-Control": "public, max-age=3600",
     },
   });

@@ -15,11 +15,8 @@ binding = "DB"
 database_name = "nb-factuur-db"
 database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
 
-# R2 bucket for company logos — create with:
-#   npx wrangler r2 bucket create nb-factuur-logos
-[[r2_buckets]]
-binding = "LOGOS"
-bucket_name = "nb-factuur-logos"
+# Company logos are stored as BLOBs directly in D1 (see schema.sql), not R2 —
+# R2 requires a payment method on file even to use its free tier, D1 doesn't.
 
 [vars]
 # Public, non-secret config. Real secrets (Google OAuth client secret,

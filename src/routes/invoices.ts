@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { Company, Client, Env, Invoice, InvoiceItem, InvoiceItemInput, VatScheme } from "../types";
 import { AuthedVars, requireAuth, requireCompanyOwnership } from "../lib/middleware";
-import { newId, amountToCents, todayIso } from "../lib/util";
+import { newId, amountToCents, todayIso, COMPANY_COLUMNS } from "../lib/util";
 import { buildInvoicePdf } from "../lib/pdf";
 
 const invoices = new Hono<{ Bindings: Env; Variables: AuthedVars }>();
@@ -81,7 +81,7 @@ invoices.post("/", async (c) => {
   }
 
   const company = await c.env.DB
-    .prepare("SELECT * FROM companies WHERE id = ?")
+    .prepare(`SELECT ${COMPANY_COLUMNS} FROM companies WHERE id = ?`)
     .bind(body.company_id)
     .first<Company>();
   if (!company) return c.json({ error: "Company not found" }, 404);
@@ -180,7 +180,7 @@ async function loadInvoiceBundle(
   if (!(await requireCompanyOwnership(c, invoice.company_id))) return null;
 
   const company = await c.env.DB
-    .prepare("SELECT * FROM companies WHERE id = ?")
+    .prepare(`SELECT ${COMPANY_COLUMNS} FROM companies WHERE id = ?`)
     .bind(invoice.company_id)
     .first<Company>();
   const client = await c.env.DB
@@ -208,12 +208,15 @@ invoices.get("/:id/pdf", async (c) => {
   if (!company || !client) return c.json({ error: "Invoice data incomplete" }, 500);
 
   let logoBytes: { bytes: ArrayBuffer; contentType: string } | null = null;
-  if (company.logo_key) {
-    const obj = await c.env.LOGOS.get(company.logo_key);
-    if (obj) {
+  if (company.logo_content_type) {
+    const row = await c.env.DB
+      .prepare("SELECT logo_data, logo_content_type FROM companies WHERE id = ?")
+      .bind(company.id)
+      .first<{ logo_data: ArrayBuffer | null; logo_content_type: string | null }>();
+    if (row?.logo_data) {
       logoBytes = {
-        bytes: await obj.arrayBuffer(),
-        contentType: obj.httpMetadata?.contentType ?? "image/png",
+        bytes: row.logo_data,
+        contentType: row.logo_content_type ?? "image/png",
       };
     }
   }

@@ -24,7 +24,7 @@ async function init() {
     if (el) el.value = company[id] ?? "";
   }
 
-  if (company.logo_key) {
+  if (company.logo_content_type) {
     const preview = document.getElementById("logoPreview");
     preview.src = `/api/companies/${companyId}/logo`;
     preview.style.display = "inline-block";

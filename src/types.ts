@@ -1,6 +1,5 @@
 export type Env = {
   DB: D1Database;
-  LOGOS: R2Bucket;
   APP_URL: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;
@@ -26,7 +25,7 @@ export interface Company {
   bic: string | null;
   email: string | null;
   phone: string | null;
-  logo_key: string | null;
+  logo_content_type: string | null;
   default_currency: string;
   invoice_prefix: string;
   next_invoice_seq: number;

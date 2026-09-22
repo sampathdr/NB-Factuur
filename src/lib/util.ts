@@ -37,3 +37,15 @@ export function formatMoney(cents: number, currency: string): string {
 export function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
+
+/**
+ * Company columns excluding `logo_data` (a BLOB that can be up to 2MB).
+ * Use this for any query whose result gets JSON-serialized or listed;
+ * fetch `logo_data` separately only where the actual bytes are needed
+ * (the /logo endpoint and PDF generation).
+ */
+export const COMPANY_COLUMNS = `
+  id, owner_user_id, legal_name, trade_name, address_line1, postal_code, city, country,
+  kvk_number, vat_number, vat_scheme, iban, bic, email, phone, logo_content_type,
+  default_currency, invoice_prefix, next_invoice_seq, created_at
+`;

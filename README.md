@@ -6,9 +6,12 @@ Belastingdienst/KvK mandatory-invoice-field requirements.
 ## Stack
 
 - **Cloudflare Workers** (Hono) — API + static asset hosting, one deployment
-- **D1** — companies, clients, invoices (SQLite, free tier)
-- **R2** — company logo storage (free tier)
-- **Arctic** — Google OAuth (PKCE), session cookie backed by a `sessions` table in D1
+- **D1** — companies, clients, invoices, and logo images (SQLite, free tier —
+  logos are stored as a BLOB column rather than in R2, since R2 requires a
+  payment method on file even to use its free tier; D1 doesn't)
+- Hand-rolled Google OAuth 2.0 + PKCE (no third-party OAuth library — the
+  popular `arctic` package is unmaintained), session cookie backed by a
+  `sessions` table in D1
 - **pdf-lib** — server-side PDF generation (no headless browser needed, so it
   stays on the free Workers tier)
 
@@ -49,13 +52,7 @@ npm run db:migrate:local    # for local `wrangler dev`
 npm run db:migrate:remote   # for production
 ```
 
-### 3. Create the R2 bucket
-
-```bash
-npx wrangler r2 bucket create nb-factuur-logos
-```
-
-### 4. Create a Google OAuth client
+### 3. Create a Google OAuth client
 
 1. Go to the [Google Cloud Console](https://console.cloud.google.com/apis/credentials).
 2. Create an **OAuth client ID** of type "Web application".
@@ -64,7 +61,7 @@ npx wrangler r2 bucket create nb-factuur-logos
    - `https://<your-worker-subdomain>.workers.dev/auth/google/callback` (production — or your custom domain)
 4. Copy the Client ID and Client Secret.
 
-### 5. Configure secrets
+### 4. Configure secrets
 
 For local dev, copy `.dev.vars.example` to `.dev.vars` and fill in the values
 (never commit this file — it's already gitignored).
@@ -80,7 +77,7 @@ npx wrangler secret put SESSION_SECRET   # any long random string
 Also update `APP_URL` in `wrangler.toml` under `[vars]` to your production URL
 once you know your `*.workers.dev` subdomain (or custom domain), then redeploy.
 
-### 6. Run locally
+### 5. Run locally
 
 ```bash
 npm run dev
@@ -88,7 +85,7 @@ npm run dev
 
 Visit `http://localhost:8787`.
 
-### 7. Deploy
+### 6. Deploy
 
 ```bash
 npm run deploy
